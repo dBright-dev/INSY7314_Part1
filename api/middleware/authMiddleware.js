@@ -10,7 +10,7 @@ function authenticateToken(req, res, next) {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      // don't leak whether it's expired vs malformed vs wrong secret — keep it generic
+      // generic
       return res.status(403).json({ error: 'Invalid or expired token' });
     }
     req.user = decoded; // { userId, role, iat, exp }
