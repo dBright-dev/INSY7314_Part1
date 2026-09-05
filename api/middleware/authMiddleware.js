@@ -99,6 +99,7 @@ module.exports = {
     authorizeRoles,
     optionalAuth
 };
+};
 const jwt = require('jsonwebtoken');
 
 function authenticateToken(req, res, next) {

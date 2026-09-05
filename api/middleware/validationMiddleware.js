@@ -5,6 +5,26 @@
 
 const { body, validationResult } = require('express-validator');
 
+/**
+ * Shared validation result handler
+ * Checks accumulated validation errors and returns a consistent 400 response.
+ * Used by all rule arrays below so the response shape never drifts between routes.
+ */
+const handleValidationErrors = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            message: 'Validation failed',
+            errors: errors.array().map(err => ({
+                field: err.path,
+                message: err.msg
+            }))
+        });
+    }
+    next();
+};
+
 const validateRegistration = [
     // Name validation - required, trimmed
     body('name')
@@ -18,6 +38,7 @@ const validateRegistration = [
         .trim()
         .notEmpty().withMessage('Email is required')
         .isEmail().withMessage('Please provide a valid email address')
+        .normalizeEmail({
         .normalizeEmail({ 
             gmail_remove_dots: false,
             yahoo_remove_subaddress: true,
@@ -25,6 +46,11 @@ const validateRegistration = [
         })
         .isLength({ max: 100 }).withMessage('Email cannot exceed 100 characters'),
 
+    // Password validation - required, secure, bounded length
+    body('password')
+        .notEmpty().withMessage('Password is required')
+        .isLength({ min: 8, max: 128 }).withMessage('Password must be between 8 and 128 characters long')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,128}$/)
     // Password validation - required, secure
     body('password')
         .notEmpty().withMessage('Password is required')
@@ -38,6 +64,7 @@ const validateRegistration = [
         .trim()
         .isIn(['Client', 'Freelancer', 'Admin']).withMessage('Role must be Client, Freelancer, or Admin'),
 
+    handleValidationErrors
     // Validation result handler
     (req, res, next) => {
         const errors = validationResult(req);
@@ -67,6 +94,9 @@ const validateLogin = [
 
     body('password')
         .notEmpty().withMessage('Password is required')
+        .isLength({ min: 1, max: 128 }).withMessage('Password cannot be empty'),
+
+    handleValidationErrors
         .isLength({ min: 1 }).withMessage('Password cannot be empty'),
 
     (req, res, next) => {
@@ -101,6 +131,7 @@ const validateUserUpdate = [
         .isEmail().withMessage('Please provide a valid email address')
         .normalizeEmail(),
 
+    handleValidationErrors
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

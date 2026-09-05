@@ -6,6 +6,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
+const { AuthenticationError, NotFoundError } = require('../middleware/errorHandler');
 const { validateRegistration, validateLogin } = require('../middleware/validationMiddleware');
 
 class AuthController {
@@ -44,6 +45,7 @@ class AuthController {
             });
 
         } catch (error) {
+            next(error);
             console.error('Registration error:', error);
             res.status(500).json({
                 success: false,
@@ -59,6 +61,9 @@ class AuthController {
             // Find user by email
             const user = userModel.findByEmail(email);
             
+            // Use custom AuthenticationError instead of hand-building the response
+            if (!user) {
+                return next(new AuthenticationError('Invalid email or password'));
             // Return 401 Unauthorized if user not found
             if (!user) {
                 return res.status(401).json({
@@ -100,6 +105,7 @@ class AuthController {
             });
 
         } catch (error) {
+            next(error);
             console.error('Login error:', error);
             res.status(500).json({
                 success: false,
@@ -116,6 +122,8 @@ class AuthController {
             // req.user is set by authMiddleware
             const user = userModel.findById(req.user.userId);
             
+             if (!user) {
+                return next(new NotFoundError('User not found'));
             if (!user) {
                 return res.status(404).json({
                     success: false,
@@ -131,6 +139,7 @@ class AuthController {
             });
 
         } catch (error) {
+            next(error);
             console.error('Profile error:', error);
             res.status(500).json({
                 success: false,
