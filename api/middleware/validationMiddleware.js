@@ -1,0 +1,124 @@
+/**
+ * References:
+ * - Manico & Detlefsen, 2015 - Chapter 3: Input Validation
+ */
+
+const { body, validationResult } = require('express-validator');
+
+const validateRegistration = [
+    // Name validation - required, trimmed
+    body('name')
+        .trim()
+        .notEmpty().withMessage('Name is required')
+        .isLength({ min: 2, max: 50 }).withMessage('Name must be between 2 and 50 characters')
+        .matches(/^[a-zA-Z\s']+$/).withMessage('Name can only contain letters, spaces, and apostrophes'),
+
+    // Email validation - required, valid format, normalized
+    body('email')
+        .trim()
+        .notEmpty().withMessage('Email is required')
+        .isEmail().withMessage('Please provide a valid email address')
+        .normalizeEmail({ 
+            gmail_remove_dots: false,
+            yahoo_remove_subaddress: true,
+            icloud_remove_subaddress: true
+        })
+        .isLength({ max: 100 }).withMessage('Email cannot exceed 100 characters'),
+
+    // Password validation - required, secure
+    body('password')
+        .notEmpty().withMessage('Password is required')
+        .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+        .withMessage('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'),
+
+    // Role validation - optional, defaults to 'Client'
+    body('role')
+        .optional()
+        .trim()
+        .isIn(['Client', 'Freelancer', 'Admin']).withMessage('Role must be Client, Freelancer, or Admin'),
+
+    // Validation result handler
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array().map(err => ({
+                    field: err.path,
+                    message: err.msg
+                }))
+            });
+        }
+        next();
+    }
+];
+
+/**
+ * Login Validation Rules
+ */
+const validateLogin = [
+    body('email')
+        .trim()
+        .notEmpty().withMessage('Email is required')
+        .isEmail().withMessage('Please provide a valid email address')
+        .normalizeEmail(),
+
+    body('password')
+        .notEmpty().withMessage('Password is required')
+        .isLength({ min: 1 }).withMessage('Password cannot be empty'),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array().map(err => ({
+                    field: err.path,
+                    message: err.msg
+                }))
+            });
+        }
+        next();
+    }
+];
+
+/**
+ * User Update Validation Rules
+ */
+const validateUserUpdate = [
+    body('name')
+        .optional()
+        .trim()
+        .isLength({ min: 2, max: 50 }).withMessage('Name must be between 2 and 50 characters')
+        .matches(/^[a-zA-Z\s']+$/).withMessage('Name can only contain letters, spaces, and apostrophes'),
+
+    body('email')
+        .optional()
+        .trim()
+        .isEmail().withMessage('Please provide a valid email address')
+        .normalizeEmail(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array().map(err => ({
+                    field: err.path,
+                    message: err.msg
+                }))
+            });
+        }
+        next();
+    }
+];
+
+module.exports = {
+    validateRegistration,
+    validateLogin,
+    validateUserUpdate
+};
