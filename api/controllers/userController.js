@@ -67,10 +67,22 @@ class UserController{
                 return next(new AuthorizationError('Access denied. You can only update your own profile.'));
             }
 
-            //If password is being updated, hash it
-            if(updateData.password){
-                data: usersWithoutPasswords
+            // If password provided, hash it
+            if (updateData.password) {
+                updateData.password = await bcrypt.hash(updateData.password, 10);
             }
+
+            const updatedUser = userModel.updateUser(id, updateData);
+            if (!updatedUser) {
+                return next(new NotFoundError('User not found'));
+            }
+
+            const { password, ...userWithoutPassword } = updatedUser;
+            res.status(200).json({
+                success: true,
+                message: 'User profile updated successfully',
+                data: userWithoutPassword
+            });
         } catch (error) {
             console.error('Get users error:', error);
             res.status(500).json({
@@ -81,87 +93,9 @@ class UserController{
     }
 
     /**
-     * Get user by ID
-     */
-    async getUserById(req, res) {
-        try {
-            const { id } = req.params;
-            
-            // Check if user is requesting their own data or is admin
-            if (req.user.userId !== id && req.user.role !== 'Admin') {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Access denied. You can only view your own profile.'
-                });
-            }
-
-            const user = userModel.findById(id);
-            
-            if (!user) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'User not found'
-                });
-            }
-
-            const { password, ...userWithoutPassword } = user;
-
-            res.status(200).json({
-                success: true,
-                data: userWithoutPassword
-            });
-        } catch (error) {
-            console.error('Get user error:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Failed to fetch user'
-            });
-        }
-    }
-
-    /**
-     * Update user
-     */
-    async updateUser(req, res) {
-        try {
-            const { id } = req.params;
-            const updateData = req.body;
-
-            // Check if user is updating their own data or is admin
-            if (req.user.userId !== id && req.user.role !== 'Admin') {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Access denied. You can only update your own profile.'
-                });
-            }
-
-            // If password is being updated, hash it
-            if (updateData.password) {
-                updateData.password = await bcrypt.hash(updateData.password, 10);
-            }
-
-            const updatedUser = userModel.updateUser(id, updateData);
-
-            if(!updatedUser){
-                return next(new NotFoundError('User not found'));
-            }
-
-            const {password, ...userWithoutPassword} = updatedUser;
-
-            res.status(200).json({
-                success: true,
-                message: 'User profile updated sucessfully',
-                data: userWithoutPassword
-            });
-        } catch(error){
-            next(error);
-        }
-    }
-
-    /**
      * Delete user (Admin only)
      */
-    async deleteUser(req, res) {
+    async deleteUser(req, res, next) {
         try {
             const { id } = req.params;
 
