@@ -59,22 +59,7 @@ const validateRegistration = [
         .trim()
         .isIn(['Client', 'Freelancer', 'Admin']).withMessage('Role must be Client, Freelancer, or Admin'),
 
-    handleValidationErrors,
-    // Validation result handler
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                success: false,
-                message: 'Validation failed',
-                errors: errors.array().map(err => ({
-                    field: err.path,
-                    message: err.msg
-                }))
-            });
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 /**
@@ -92,22 +77,6 @@ const validateLogin = [
         .isLength({ min: 1, max: 128 }).withMessage('Password cannot be empty'),
 
     handleValidationErrors
-        .isLength({ min: 1 }).withMessage('Password cannot be empty'),
-
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                success: false,
-                message: 'Validation failed',
-                errors: errors.array().map(err => ({
-                    field: err.path,
-                    message: err.msg
-                }))
-            });
-        }
-        next();
-    }
 ];
 
 /**
@@ -126,21 +95,7 @@ const validateUserUpdate = [
         .isEmail().withMessage('Please provide a valid email address')
         .normalizeEmail(),
 
-    handleValidationErrors,
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                success: false,
-                message: 'Validation failed',
-                errors: errors.array().map(err => ({
-                    field: err.path,
-                    message: err.msg
-                }))
-            });
-        }
-        next();
-    }
+    handleValidationErrors
 ];
 
 module.exports = {
