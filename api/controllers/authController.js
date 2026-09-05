@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
 const { AuthenticationError, NotFoundError } = require('../middleware/errorHandler');
+const { validateRegistration, validateLogin } = require('../middleware/validationMiddleware');
 
 class AuthController {
    
@@ -45,6 +46,11 @@ class AuthController {
 
         } catch (error) {
             next(error);
+            console.error('Registration error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Registration failed. Please try again.'
+            });
         }
     }
 
@@ -58,6 +64,12 @@ class AuthController {
             // Use custom AuthenticationError instead of hand-building the response
             if (!user) {
                 return next(new AuthenticationError('Invalid email or password'));
+            // Return 401 Unauthorized if user not found
+            if (!user) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid email or password'
+                });
             }
 
             // Verify password using bcrypt.compare
@@ -94,6 +106,11 @@ class AuthController {
 
         } catch (error) {
             next(error);
+            console.error('Login error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Login failed. Please try again.'
+            });
         }
     }
 
@@ -107,6 +124,11 @@ class AuthController {
             
              if (!user) {
                 return next(new NotFoundError('User not found'));
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found'
+                });
             }
 
             const { password: _, ...userWithoutPassword } = user;
@@ -118,8 +140,27 @@ class AuthController {
 
         } catch (error) {
             next(error);
+            console.error('Profile error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Failed to get profile'
+            });
         }
     }
 }
 
 module.exports = new AuthController();
+const jwt = require('jsonwebtoken');
+
+const token = jwt.sign(
+  { userId: user.id, role: user.role },
+  process.env.JWT_SECRET,
+  { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
+);
+
+return res.status(200).json({
+  message: 'Login successful',
+  token,
+  user: { id: user.id, name: user.name, role: user.role } // never send the password hash back
+});
+

@@ -39,6 +39,7 @@ const validateRegistration = [
         .notEmpty().withMessage('Email is required')
         .isEmail().withMessage('Please provide a valid email address')
         .normalizeEmail({
+        .normalizeEmail({ 
             gmail_remove_dots: false,
             yahoo_remove_subaddress: true,
             icloud_remove_subaddress: true
@@ -50,6 +51,11 @@ const validateRegistration = [
         .notEmpty().withMessage('Password is required')
         .isLength({ min: 8, max: 128 }).withMessage('Password must be between 8 and 128 characters long')
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,128}$/)
+    // Password validation - required, secure
+    body('password')
+        .notEmpty().withMessage('Password is required')
+        .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
         .withMessage('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'),
 
     // Role validation - optional, defaults to 'Client'
@@ -59,6 +65,21 @@ const validateRegistration = [
         .isIn(['Client', 'Freelancer', 'Admin']).withMessage('Role must be Client, Freelancer, or Admin'),
 
     handleValidationErrors
+    // Validation result handler
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array().map(err => ({
+                    field: err.path,
+                    message: err.msg
+                }))
+            });
+        }
+        next();
+    }
 ];
 
 /**
@@ -76,6 +97,22 @@ const validateLogin = [
         .isLength({ min: 1, max: 128 }).withMessage('Password cannot be empty'),
 
     handleValidationErrors
+        .isLength({ min: 1 }).withMessage('Password cannot be empty'),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array().map(err => ({
+                    field: err.path,
+                    message: err.msg
+                }))
+            });
+        }
+        next();
+    }
 ];
 
 /**
@@ -95,6 +132,20 @@ const validateUserUpdate = [
         .normalizeEmail(),
 
     handleValidationErrors
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array().map(err => ({
+                    field: err.path,
+                    message: err.msg
+                }))
+            });
+        }
+        next();
+    }
 ];
 
 module.exports = {
