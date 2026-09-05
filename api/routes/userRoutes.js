@@ -31,3 +31,5 @@ router.put('/:id', authenticateToken, validateUserUpdate, userController.updateU
  * Delete user (Admin only)
  */
 router.delete('/:id', authenticateToken, authorizeRoles('Admin'), userController.deleteUser);
+
+module.exports = router;
