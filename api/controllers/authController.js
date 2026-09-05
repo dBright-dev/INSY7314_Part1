@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 /**
  * References: 
  * Manico & Detlefsen, 2015 - Chapter 4: Authentication
@@ -125,4 +123,3 @@ class AuthController {
 }
 
 module.exports = new AuthController();
->>>>>>> Stashed changes
