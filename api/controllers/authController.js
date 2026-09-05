@@ -1,33 +1,30 @@
 /**
- * References: 
- * Manico & Detlefsen, 2015 - Chapter 4: Authentication
+ * References: Manico & Detlefsen, 2015 - Chapter 4: Authentication
  */
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
 const { AuthenticationError, NotFoundError } = require('../middleware/errorHandler');
-const { validateRegistration, validateLogin } = require('../middleware/validationMiddleware');
 
 class AuthController {
-   
-    async register(req, res) {
+    async register(req, res, next) {
         try {
             const { name, email, password, role } = req.body;
 
-            // Check if user already exists - return 400 Bad Request as specified
+            // Check if user already exists
             const existingUser = userModel.findByEmail(email);
             if (existingUser) {
-                return res.status(400).json({
+                return res.status(409).json({
                     success: false,
                     message: 'Email already registered. Please use a different email address or login.'
                 });
             }
 
-            // Hash password using bcrypt with 10 salt rounds
+            // Hash password
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Create user with hashed password
+            // Create user
             const user = userModel.createUser({
                 name,
                 email,
@@ -35,7 +32,7 @@ class AuthController {
                 role: role || 'Client'
             });
 
-            // Return user data without password
+            // Remove password from response
             const { password: _, ...userWithoutPassword } = user;
 
             res.status(201).json({
@@ -43,28 +40,17 @@ class AuthController {
                 message: 'User registered successfully',
                 data: userWithoutPassword
             });
-
         } catch (error) {
             next(error);
-            console.error('Registration error:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Registration failed. Please try again.'
-            });
         }
     }
 
-    async login(req, res) {
+    async login(req, res, next) {
         try {
             const { email, password } = req.body;
 
-            // Find user by email
+            // Find user
             const user = userModel.findByEmail(email);
-            
-            // Use custom AuthenticationError instead of hand-building the response
-            if (!user) {
-                return next(new AuthenticationError('Invalid email or password'));
-            // Return 401 Unauthorized if user not found
             if (!user) {
                 return res.status(401).json({
                     success: false,
@@ -72,7 +58,7 @@ class AuthController {
                 });
             }
 
-            // Verify password using bcrypt.compare
+            // Verify password
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
                 return res.status(401).json({
@@ -81,7 +67,7 @@ class AuthController {
                 });
             }
 
-            // Generate JWT token on successful login
+            // Generate JWT
             const token = jwt.sign(
                 {
                     userId: user.id,
@@ -92,7 +78,6 @@ class AuthController {
                 { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
             );
 
-            // Return user data without password
             const { password: _, ...userWithoutPassword } = user;
 
             res.status(200).json({
@@ -103,27 +88,14 @@ class AuthController {
                     token
                 }
             });
-
         } catch (error) {
             next(error);
-            console.error('Login error:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Login failed. Please try again.'
-            });
         }
     }
 
-    /**
-     * Get current user profile - Protected route
-     */
-    async getProfile(req, res) {
+    async getProfile(req, res, next) {
         try {
-            // req.user is set by authMiddleware
             const user = userModel.findById(req.user.userId);
-            
-             if (!user) {
-                return next(new NotFoundError('User not found'));
             if (!user) {
                 return res.status(404).json({
                     success: false,
@@ -137,30 +109,10 @@ class AuthController {
                 success: true,
                 data: userWithoutPassword
             });
-
         } catch (error) {
             next(error);
-            console.error('Profile error:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Failed to get profile'
-            });
         }
     }
 }
 
 module.exports = new AuthController();
-const jwt = require('jsonwebtoken');
-
-const token = jwt.sign(
-  { userId: user.id, role: user.role },
-  process.env.JWT_SECRET,
-  { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
-);
-
-return res.status(200).json({
-  message: 'Login successful',
-  token,
-  user: { id: user.id, name: user.name, role: user.role } // never send the password hash back
-});
-

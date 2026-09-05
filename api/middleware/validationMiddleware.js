@@ -38,7 +38,6 @@ const validateRegistration = [
         .trim()
         .notEmpty().withMessage('Email is required')
         .isEmail().withMessage('Please provide a valid email address')
-        .normalizeEmail({
         .normalizeEmail({ 
             gmail_remove_dots: false,
             yahoo_remove_subaddress: true,
@@ -47,10 +46,6 @@ const validateRegistration = [
         .isLength({ max: 100 }).withMessage('Email cannot exceed 100 characters'),
 
     // Password validation - required, secure, bounded length
-    body('password')
-        .notEmpty().withMessage('Password is required')
-        .isLength({ min: 8, max: 128 }).withMessage('Password must be between 8 and 128 characters long')
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,128}$/)
     // Password validation - required, secure
     body('password')
         .notEmpty().withMessage('Password is required')
@@ -64,7 +59,7 @@ const validateRegistration = [
         .trim()
         .isIn(['Client', 'Freelancer', 'Admin']).withMessage('Role must be Client, Freelancer, or Admin'),
 
-    handleValidationErrors
+    handleValidationErrors,
     // Validation result handler
     (req, res, next) => {
         const errors = validationResult(req);
@@ -131,7 +126,7 @@ const validateUserUpdate = [
         .isEmail().withMessage('Please provide a valid email address')
         .normalizeEmail(),
 
-    handleValidationErrors
+    handleValidationErrors,
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

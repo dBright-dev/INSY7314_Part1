@@ -3,22 +3,10 @@ const bcrypt = require('bcrypt');
 const {AuthorizationError, NotFoundError} = require('../middleware/errorHandler');
 
 class UserController{
-    //Get all users (Admin only)
-    async getAllUsers(req, res, next) {
-        try {
-            const users = userModel.findAll();
-
-            //Remove passwords from response
-            const userWithoutPasswords = users.map(user =>{
-                const { password, ...userWithoutPassword} = user;
 /**
  * References: Manico & Detlefsen, 2015 - Chapter 6: Access Control
  */
 
-const userModel = require('../models/userModel');
-const bcrypt = require('bcrypt');
-
-class UserController {
     /**
      * Get all users (Admin only)
      */
@@ -82,7 +70,7 @@ class UserController {
             //If password is being updated, hash it
             if(updateData.password){
                 data: usersWithoutPasswords
-            });
+            }
         } catch (error) {
             console.error('Get users error:', error);
             res.status(500).json({
@@ -170,38 +158,6 @@ class UserController {
         }
     }
 
-    //Delete user (Admin only)
-    async deleteUser(req, res, next){
-        try{
-            const{id} = req.params;
-            
-            //Prevent deleting yourself
-            if (req.user.userId === id){
-                return res.status(400).json({
-                    sucess: false,
-            if (!updatedUser) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'User not found'
-                });
-            }
-
-            const { password, ...userWithoutPassword } = updatedUser;
-
-            res.status(200).json({
-                success: true,
-                message: 'User updated successfully',
-                data: userWithoutPassword
-            });
-        } catch (error) {
-            console.error('Update user error:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Failed to update user'
-            });
-        }
-    }
-
     /**
      * Delete user (Admin only)
      */
@@ -219,8 +175,6 @@ class UserController {
 
             const deleted = userModel.deleteUser(id);
 
-            if(!deleted) {
-                return next(new NotFoundError('User not found'));
             if (!deleted) {
                 return res.status(404).json({
                     success: false,
@@ -232,8 +186,6 @@ class UserController {
                 success: true,
                 message: 'User deleted successfully'
             });
-        } catch(error){
-            next(error);
         } catch (error) {
             console.error('Delete user error:', error);
             res.status(500).json({
