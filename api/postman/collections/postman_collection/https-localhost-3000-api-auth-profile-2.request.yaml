@@ -1,0 +1,10 @@
+$kind: http-request
+name: https://localhost:3000/api/auth/profile
+description: ""
+url: https://localhost:3000/api/auth/profile
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: gftyukknn ujty5r68900o
+order: 4471835685487668

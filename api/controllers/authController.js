@@ -2,7 +2,7 @@
  * References: Manico & Detlefsen, 2015 - Chapter 4: Authentication
  */
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
 const { AuthenticationError, NotFoundError } = require('../middleware/errorHandler');
