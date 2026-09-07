@@ -300,10 +300,12 @@ const getSafeErrorMessage = (err, statusCode) => {
 | **POST** | `/api/auth/login` | Login and receive JWT | `{ email, password }` | `200 OK` + `token` | `401 Unauthorized` |
 | **GET** | `/api/health` | Health check | N/A | `200 OK` | N/A |
 
+Register
 <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/00a150fd-c4a2-47b7-8824-3fabbb3b5cd2" />
 <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/8570f6c4-7f0c-4354-a006-aa4a5a573991" />
 <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/66ace717-f142-45b0-a05f-c803dfe94474" />
 
+Login
 <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/bbdff7fa-73dd-491c-b6e2-420ae1a84a46" />
 <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/720428e9-68a0-4298-a9be-3de09d597bdc" />
 <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/38fbc13c-a504-40ae-8ace-38348b2f44e6" />
@@ -318,6 +320,7 @@ const getSafeErrorMessage = (err, statusCode) => {
 | **PUT** | `/api/users/:id` | Update user (own or admin) | `{ name?, email?, password? }` | `200 OK` | `403 Forbidden`, `404 Not Found` |
 | **DELETE** | `/api/users/:id` | Delete user (Admin only) | N/A | `200 OK` | `403 Forbidden`, `404 Not Found` |
 
+User Profile
 <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/46adc8cd-bc9d-412f-9736-814bd2b43677" />
 <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/1e65e3d2-ad66-453b-9d63-38ecf3c40e3b" />
 <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/aefdc1bf-1dc2-4a01-af99-ea9d232d1684" />
