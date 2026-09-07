@@ -1,69 +1,54 @@
+// controllers/userController.js
 const userModel = require('../models/userModel');
-const bcrypt = require('bcryptjs');
-const {AuthorizationError, NotFoundError} = require('../middleware/errorHandler');
+const bcrypt = require('bcrypt');
+const { AuthorizationError, NotFoundError } = require('../middleware/errorHandler');
 
-class UserController{
-/**
- * References: Manico & Detlefsen, 2015 - Chapter 6: Access Control
- */
-
-    /**
-     * Get all users (Admin only)
-     */
-    async getAllUsers(req, res) {
+class UserController {
+    // ✅ Get all users (Admin only)
+    async getAllUsers(req, res, next) {
         try {
             const users = userModel.findAll();
-            
-            // Remove passwords from response
-            const usersWithoutPasswords = users.map(user => {
-                const { password, ...userWithoutPassword } = user;
-                return userWithoutPassword;
-            });
-
+            const usersWithoutPasswords = users.map(({ password, ...rest }) => rest);
             res.status(200).json({
                 success: true,
-                data: userWithoutPasswords
+                data: usersWithoutPasswords
             });
-        } catch (error){
-            next(error);
+        } catch (error) {
+            next(error); // now next is defined
         }
     }
 
-    //Get user by ID
-    async getUserById(req, res, next){
+    // ✅ Get user by ID (own or admin)
+    async getUserById(req, res, next) {
         try {
-            const{id} = req.params;
-
-            //Check if user is requesting their own data or is admin
-            if(req.user.userId !== id && req.user.role !== 'Admin') {
+            const { id } = req.params;
+            // Check permission: user can view own profile or admin
+            if (req.user.userId !== id && req.user.role !== 'Admin') {
                 return next(new AuthorizationError('Access denied. You can only view your own profile.'));
             }
 
             const user = userModel.findById(id);
-
-            if(!user){
+            if (!user) {
                 return next(new NotFoundError('User not found'));
             }
 
-            const {password, ...userWithoutPassword} = user;
-
+            const { password, ...userWithoutPassword } = user;
             res.status(200).json({
                 success: true,
-                data:userWithoutPassword
+                data: userWithoutPassword
             });
-        } catch(error){
+        } catch (error) {
             next(error);
         }
     }
 
-    //Update user
-    async updateUser(req, res, next){
+    // ✅ Update user (own or admin)
+    async updateUser(req, res, next) {
         try {
-            const{id} = req.params;
+            const { id } = req.params;
             const updateData = req.body;
 
-            //Check if user is updating their own data or is admin
-            if(req.user.userId !== id && req.user.role !== 'Admin'){
+            if (req.user.userId !== id && req.user.role !== 'Admin') {
                 return next(new AuthorizationError('Access denied. You can only update your own profile.'));
             }
 
@@ -84,36 +69,26 @@ class UserController{
                 data: userWithoutPassword
             });
         } catch (error) {
-            console.error('Get users error:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Failed to fetch users'
-            });
+            next(error);
         }
     }
 
-    /**
-     * Delete user (Admin only)
-     */
+    // ✅ Delete user (Admin only)
     async deleteUser(req, res, next) {
         try {
             const { id } = req.params;
 
-            // Prevent deleting yourself
+            // Prevent admin from deleting themselves
             if (req.user.userId === id) {
                 return res.status(400).json({
                     success: false,
-                    message: 'You cannot delete your own account through this endpoint'
+                    message: 'You cannot delete your own account through this endpoint.'
                 });
             }
 
             const deleted = userModel.deleteUser(id);
-
             if (!deleted) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'User not found'
-                });
+                return next(new NotFoundError('User not found'));
             }
 
             res.status(200).json({
@@ -121,11 +96,7 @@ class UserController{
                 message: 'User deleted successfully'
             });
         } catch (error) {
-            console.error('Delete user error:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Failed to delete user'
-            });
+            next(error);
         }
     }
 }

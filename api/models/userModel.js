@@ -80,6 +80,16 @@ class UserModel {
         this.saveUsers();
         return this.users[index];
     }
+
+    // ✅ Delete user (NEW)
+    deleteUser(id) {
+        const index = this.users.findIndex(user => user.id === id);
+        if (index === -1) return false;
+
+        this.users.splice(index, 1);
+        this.saveUsers();
+        return true;
+    }
 }
 
 module.exports = new UserModel();
