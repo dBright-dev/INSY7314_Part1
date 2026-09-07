@@ -57,7 +57,8 @@ All users are authenticated using **JWT tokens**, and access to resources is con
 
 The following diagram illustrates the **MERN (MongoDB, Express, React, Node.js)** architecture with security features and system boundaries.
 
-<img width="1600" height="1529" alt="IMG-20260907-WA0005" src="https://github.com/user-attachments/assets/6a0418ba-40c9-4e80-a939-8dc7797253f5" />
+<img width="794" height="689" alt="pART1SystemArchi" src="https://github.com/user-attachments/assets/fb277e34-360a-4277-8daf-4886ee2ebfed" />
+
 
 <img width="1532" height="1600" alt="IMG-20260907-WA0004" src="https://github.com/user-attachments/assets/819e717a-67f7-4d60-8d8b-e06b0580e575" />
 
