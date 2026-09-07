@@ -105,8 +105,7 @@ api/
 │   └── server.crt           # SSL certificate (self-signed)
 ├── data/
 │   └── users.json           # Persistent user storage (file-based)
-├── tests/
-│   └── postman/             # Postman collection for testing
+├── postman/             # Postman collection for testing
 ├── .env                     # Environment variables (NOT committed)
 ├── .gitignore               # Excludes secrets, certs, dependencies
 ├── package.json             # Dependencies & scripts
