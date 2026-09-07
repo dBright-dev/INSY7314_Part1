@@ -1,0 +1,10 @@
+$kind: http-request
+name: " https://localhost:3000/api/users/e2b30443-e408-45db-b359-68db4ab427f6"
+description: ""
+url: " https://localhost:3000/api/users/e2b30443-e408-45db-b359-68db4ab427f6"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_135k}}"
+order: 4498083068484736

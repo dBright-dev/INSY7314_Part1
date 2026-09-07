@@ -1,0 +1,17 @@
+$kind: http-request
+name: https://localhost:3000/api/users/cd89d04c-cd9a-45ad-9b45-ae8e826ccaae
+description: ""
+url: https://localhost:3000/api/users/cd89d04c-cd9a-45ad-9b45-ae8e826ccaae
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Benson Longa\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_135k}}"
+order: 4479120211311794
