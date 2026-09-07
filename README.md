@@ -1,5 +1,5 @@
 # HustleHub+ Backend API – Part 1: Secure Foundations
-
+Video Youtube Url: https://youtu.be/5i6BAlv6qx0 
 ---
 
 ## 📖 Table of Contents
@@ -105,8 +105,7 @@ api/
 │   └── server.crt           # SSL certificate (self-signed)
 ├── data/
 │   └── users.json           # Persistent user storage (file-based)
-├── tests/
-│   └── postman/             # Postman collection for testing
+├── postman/             # Postman collection for testing
 ├── .env                     # Environment variables (NOT committed)
 ├── .gitignore               # Excludes secrets, certs, dependencies
 ├── package.json             # Dependencies & scripts
@@ -338,7 +337,7 @@ User Profile
 ### Step 1: Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone [<repository-url>](https://github.com/dBright-dev/INSY7314_Part1.git)
 cd hustlehub-backend/api
 ```
 
@@ -371,7 +370,6 @@ JWT_EXPIRES_IN=7d
 CORS_ORIGIN=http://localhost:3001
 ```
 
-> **⚠️ IMPORTANT:** Never commit the `.env` file to version control.
 
 ### Step 5: Start the Server
 
@@ -391,6 +389,7 @@ API Documentation: https://localhost:3000/api/health
 
 Open your browser or Postman and visit:
 - `https://localhost:3000/api/health`
+<img width="200" height="200" alt="Screenshot 2026-09-07 202131" src="https://github.com/user-attachments/assets/973af650-1cc4-4cb1-bfd7-5f74bf2a6df9" />
 
 ---
 
