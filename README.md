@@ -396,31 +396,24 @@ Open your browser or Postman and visit:
 
 ## Technology Stack
 
-| Layer | Technology | Version | Purpose |
-|-------|------------|---------|---------|
-| **Runtime** | Node.js | 14+ | JavaScript runtime for backend |
-| **Framework** | Express.js | 4.x | Web application framework |
-| **Authentication** | jsonwebtoken (JWT) | 9.x | Token-based authentication |
-| **Password Hashing** | bcrypt | 5.x | Secure password hashing |
-| **Validation** | express-validator | 6.x | Input validation & sanitisation |
-| **Security Headers** | Helmet.js | 7.x | HTTP security headers |
-| **CORS** | cors | 2.x | Cross-origin resource sharing |
-| **Logging** | morgan | 1.x | Request logging |
-| **Environment** | dotenv | 16.x | Environment variable management |
-| **Storage** | File-based (JSON) | – | User data persistence (Part 1) |
-| **Testing** | Postman, Newman | – | API testing |
-| **Version Control** | Git, GitHub | – | Source code management |
+| Layer | Technology |
+|-------|-------------------|
+| **Runtime** | Node.js: JavaScript runtime for backend |
+| **Framework** | Express.js: Web application framework |
+| **Authentication** | jsonwebtoken (JWT): Token-based authentication |
+| **Password Hashing** | bcrypt: Secure password hashing |
+| **Validation** | express-validator:Input validation & sanitisation |
+| **Security Headers** | Helmet.js: HTTP security headers |
+| **CORS** | cors: Cross-origin resource sharing |
+| **Logging** | morgan: Request logging |
+| **Environment** | dotenv: Environment variable management |
+| **Storage** | File-based (JSON): User data persistence (Part 1) |
+| **Testing** | Postman, Newman: API testing |
+| **Version Control** | Git, GitHub:  Source code management |
 
 ---
 
 ## Testing with Postman
-
-### Importing the Collection
-
-1. Open Postman.
-2. Click **Import** → **Upload Files**.
-3. Select the `HustleHub_Part1.postman_collection.json` file.
-4. Click **Import**.
 
 ### Environment Setup
 
