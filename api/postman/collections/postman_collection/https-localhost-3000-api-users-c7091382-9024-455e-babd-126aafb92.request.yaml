@@ -1,0 +1,10 @@
+$kind: http-request
+name: https://localhost:3000/api/users/c7091382-9024-455e-babd-126aafb92796
+description: ""
+url: https://localhost:3000/api/users/c7091382-9024-455e-babd-126aafb92796
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_10mq}}"
+order: 4476797290208253
