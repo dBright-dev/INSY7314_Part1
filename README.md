@@ -18,7 +18,6 @@
 7. [Setup & Installation](#setup--installation)
 8. [Technology Stack](#technology-stack)
 9. [Testing with Postman](#testing-with-postman)
-10. [Future Enhancements (Part 2)](#future-enhancements-part-2)
 
 ---
 
@@ -286,6 +285,7 @@ const getSafeErrorMessage = (err, statusCode) => {
     // In production, only return safe generic messages
     return safeMessages[statusCode] || 'An unexpected error occurred. Please try again.';
 };
+//(IIE, 2026)
 ```
 
 ---
@@ -354,6 +354,7 @@ npm install
 mkdir certs
 cd certs
 openssl req -x509 -newkey rsa:2048 -keyout server.key -out server.crt -days 365 -nodes
+//(IIE, 2026)
 # Fill in: ZA, Gauteng, Johannesburg, HustleHub, Development, localhost, dev@hustlehub.local
 cd ..
 ```
@@ -383,6 +384,7 @@ Expected output:
 HustleHub+ API running securely on https://localhost:3000
 Environment: development
 API Documentation: https://localhost:3000/api/health
+//(IIE, 2026)
 ```
 
 ### Step 6: Test the API
@@ -431,17 +433,17 @@ Create a new environment:
 
 The collection includes the following test cases:
 
-| Test | Endpoint | Description | Expected Status |
-|------|----------|-------------|-----------------|
-| ✅ Register – Valid | `POST /api/auth/register` | Create a new user | `201 Created` |
-| ❌ Register – Missing Name | `POST /api/auth/register` | Missing required field | `400 Bad Request` |
-| ❌ Register – Weak Password | `POST /api/auth/register` | Password too weak | `400 Bad Request` |
-| ✅ Login – Valid | `POST /api/auth/login` | Valid credentials | `200 OK` + `token` |
-| ❌ Login – Wrong Password | `POST /api/auth/login` | Invalid password | `401 Unauthorized` |
-| ❌ Login – Non-existent User | `POST /api/auth/login` | User not found | `401 Unauthorized` |
-| ✅ Get Profile – Valid Token | `GET /api/auth/profile` | With valid JWT | `200 OK` |
-| ❌ Get Profile – Missing Token | `GET /api/auth/profile` | No token sent | `401 Unauthorized` |
-| ❌ Get Profile – Invalid Token | `GET /api/auth/profile` | Malformed token | `403 Forbidden` |
+| Test | Endpoint | Description | Expected Status | Screenshot |
+|------|----------|-------------|-----------------|----------------------|
+| ✅ Register – Valid | `POST /api/auth/register` | Create a new user | `201 Created` | <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/00a150fd-c4a2-47b7-8824-3fabbb3b5cd2" /> |
+| ❌ Register – Missing Name | `POST /api/auth/register` | Missing required field | `400 Bad Request` | <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/8570f6c4-7f0c-4354-a006-aa4a5a573991" /> |
+| ❌ Register – Weak Password | `POST /api/auth/register` | Password too weak | `400 Bad Request` | <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/66ace717-f142-45b0-a05f-c803dfe94474" /> |
+| ✅ Login – Valid | `POST /api/auth/login` | Valid credentials | `200 OK` + `token` | <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/bbdff7fa-73dd-491c-b6e2-420ae1a84a46" /> |
+| ❌ Login – Wrong Password | `POST /api/auth/login` | Invalid password | `401 Unauthorized` | <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/720428e9-68a0-4298-a9be-3de09d597bdc" /> |
+| ❌ Login – Non-existent User | `POST /api/auth/login` | User not found | `401 Unauthorized` | <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/38fbc13c-a504-40ae-8ace-38348b2f44e6" /> |
+| ✅ Get Profile – Valid Token | `GET /api/auth/profile` | With valid JWT | `200 OK` | <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/46adc8cd-bc9d-412f-9736-814bd2b43677" /> |
+| ❌ Get Profile – Missing Token | `GET /api/auth/profile` | No token sent | `401 Unauthorized` | <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/1e65e3d2-ad66-453b-9d63-38ecf3c40e3b" /> |
+| ❌ Get Profile – Invalid Token | `GET /api/auth/profile` | Malformed token | `403 Forbidden` | <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/aefdc1bf-1dc2-4a01-af99-ea9d232d1684" /> |
 
 ### Running Tests
 
@@ -464,6 +466,7 @@ The collection includes the following test cases:
         "createdAt": "2026-09-05T10:30:00.000Z"
     }
 }
+(IIE, 2026)
 ```
 
 **Successful Login:**
@@ -481,6 +484,7 @@ The collection includes the following test cases:
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
     }
 }
+//(IIE, 2026)
 ```
 
 **Validation Error:**
@@ -492,30 +496,11 @@ The collection includes the following test cases:
         { "field": "password", "message": "Password must be at least 8 characters long" }
     ]
 }
+//(IIE, 2026)
 ```
 
 ---
 
-## Future Enhancements (Part 2)
-
-The following features will be implemented in **Part 2** of the POE:
-
-| Feature | Description |
-|---------|-------------|
-| **MongoDB Integration** | Replace file-based storage with MongoDB Atlas |
-| **Full-Stack Application** | Build a React frontend with Vite |
-| **Gig Management** | Freelancers can create, update, view, and delete their gigs |
-| **Booking System** | Clients can browse gigs and create bookings |
-| **Transactions** | Bookings generate transaction records linked to users |
-| **Income Tracking** | Freelancers can view their total income |
-| **Tax Estimation** | Calculate and display estimated tax obligations |
-| **Role-Based Access Control (RBAC)** | Enforce permissions for Client, Freelancer, Admin |
-| **Rate Limiting** | Prevent brute-force and DoS attacks |
-| **API Testing with Newman** | Automate Postman tests in CI/CD pipeline |
-| **Containerisation** | Dockerise backend and frontend |
-| **CI/CD Pipeline** | Automate testing, building, and deployment |
-
----
 
 ## Conclusion
 
@@ -527,7 +512,8 @@ The following features will be implemented in **Part 2** of the POE:
 - ✅ **Input Validation & Sanitisation** – defence against injection and XSS
 - ✅ **Controlled Error Handling** – no internal details leaked
 
-The modular architecture and comprehensive testing ensure the system is ready for extension in **Part 2**, where it will become a fully functional full-stack application with MongoDB, React, and advanced security controls.
+The modular architecture and comprehensive testing ensure the system is ready for extension in **Part 2**, where it will become a fully functional full-stack application with MongoDB, React, and advanced security controls
+(IIE, 2026).
 
 ---
 
@@ -539,7 +525,8 @@ The modular architecture and comprehensive testing ensure the system is ready fo
 - OWASP Foundation. n.d. *Authentication Cheat Sheet*. Available at: https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
 - JWT.io. n.d. *Introduction to JSON Web Tokens*. Available at: https://jwt.io/introduction
 - MDN Web Docs. n.d. *HTTP response status codes*. Available at: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-
+- The Independent Institute of Education (IIE), 2026. Infomation Systems 3D[INSY7314 Module Manual]. The Independent Institute of Education: Unpublished.
+- 
 ---
 
 **© The Independent Institute of Education (Pty) Ltd 2026**
