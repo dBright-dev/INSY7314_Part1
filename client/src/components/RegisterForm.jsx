@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-function RegisterForm({ onSuccess }) {
+export default function RegisterForm() {
     const {register} = useAuth();
-    const [form, setEmsetFormail] = useState({
+    const navigate = useNavigate();
+    const [form, setForm] = useState({
         name: '',
         email: '',
         password: '',
         comfirmPassword: '',
+        role: 'Client',
     });
     const [status, setStatus] = useState('');
     const [loading, setLoading] = useState(false);
@@ -39,10 +42,9 @@ function RegisterForm({ onSuccess }) {
                 name: form.name,
                 email: form.email,
                 password: form.password,
-                role: 'Client',
+                role: 'form.role',
             });
-            setStatus('Registration successful. Please log in.');
-            onSuccess?.()
+            navigate('/login', { state: { registered: true }});
         } catch (err) {
             setStatus(err.message);
         } finally {
@@ -50,59 +52,51 @@ function RegisterForm({ onSuccess }) {
         }
     };
 
-    return (
-        <section>
-            <h2>Register</h2>
-            <form onSubmit={handleSubmit} onValidate>
-                <div>
-                    <label htmlFor="name">Name</label>
-                    <input
-                        id="name"
-                        name="name"
-                        value={form.name} onChange={updateField}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={form.email}
-                        onChange={updateField}
-                    />
-                </div>
+ return (
+        <section className="panel" style={{ maxWidth: 480, margin: '40px auto' }}>
+            <span className="eyebrow plain">Get started</span>
+            <h1 style={{ marginTop: 8 }}>Join Hustle<span className="gold">+</span></h1>
 
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        value={form.password}
-                        onChange={updateField}
-                    />
-                </div>
+            <form onSubmit={handleSubmit} noValidate>
+                <label className="field-label">
+                    Full name
+                    <input name="name" value={form.name} onChange={update} autoFocus />
+                </label>
 
-                <div>
-                    <label htmlFor="password">Confirm Password</label>
-                    <input
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type="confirmPassword"
-                        value={form.confirmPassword}
-                        onChange={updateField}
-                    />
-                </div>
+                <label className="field-label">
+                    Email
+                    <input name="email" type="email" value={form.email} onChange={update} />
+                </label>
 
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Registering...' : 'register'}
+                <label className="field-label">
+                    I am a
+                    <select name="role" value={form.role} onChange={update}
+                        style={{ width: '100%', marginTop: 7, padding: 11, borderRadius: 9, border: '1px solid var(--line)' }}>
+                        <option value="Client">Client — I want to hire</option>
+                        <option value="Freelancer">Freelancer — I offer services</option>
+                    </select>
+                </label>
+
+                <label className="field-label">
+                    Password
+                    <input name="password" type="password" value={form.password} onChange={update} />
+                </label>
+
+                <label className="field-label">
+                    Confirm password
+                    <input name="confirmPassword" type="password" value={form.confirmPassword} onChange={update} />
+                </label>
+
+                <button type="submit" className="primary-button full-button" disabled={loading}>
+                    {loading ? 'Creating account…' : 'Create account'}
                 </button>
             </form>
 
-            {status && <p role="alert">{status}</p>}
+            {status && <p role="alert" className="status status-in-progress" style={{ marginTop: 14 }}>{status}</p>}
+
+            <p style={{ marginTop: 18, fontSize: 12, textAlign: 'center', color: 'var(--muted)' }}>
+                Already have an account? <Link to="/login" style={{ color: 'var(--sapphire)' }}>Sign in</Link>
+            </p>
         </section>
     );
-}
-
-export default RegisterForm;
+}    
