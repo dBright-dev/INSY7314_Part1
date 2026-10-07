@@ -16,7 +16,7 @@ export default function RegisterForm() {
     const [loading, setLoading] = useState(false);
 
     const updateField = (e) =>
-        setEmsetFormail({ ...form, [e.target.name]: e.target.value });
+        setForm({ ...form, [e.target.name]: e.target.value });
 
     const validate = () => {
         if (!form.name.trim()) return 'Name is required.';
@@ -60,17 +60,17 @@ export default function RegisterForm() {
             <form onSubmit={handleSubmit} noValidate>
                 <label className="field-label">
                     Full name
-                    <input name="name" value={form.name} onChange={update} autoFocus />
+                    <input name="name" value={form.name} onChange={updateField} autoFocus />
                 </label>
 
                 <label className="field-label">
                     Email
-                    <input name="email" type="email" value={form.email} onChange={update} />
+                    <input name="email" type="email" value={form.email} onChange={updateField} />
                 </label>
 
                 <label className="field-label">
                     I am a
-                    <select name="role" value={form.role} onChange={update}
+                    <select name="role" value={form.role} onChange={updateField}
                         style={{ width: '100%', marginTop: 7, padding: 11, borderRadius: 9, border: '1px solid var(--line)' }}>
                         <option value="Client">Client — I want to hire</option>
                         <option value="Freelancer">Freelancer — I offer services</option>
@@ -79,12 +79,12 @@ export default function RegisterForm() {
 
                 <label className="field-label">
                     Password
-                    <input name="password" type="password" value={form.password} onChange={update} />
+                    <input name="password" type="password" value={form.password} onChange={updateField} />
                 </label>
 
                 <label className="field-label">
                     Confirm password
-                    <input name="confirmPassword" type="password" value={form.confirmPassword} onChange={update} />
+                    <input name="confirmPassword" type="password" value={form.confirmPassword} onChange={updateField} />
                 </label>
 
                 <button type="submit" className="primary-button full-button" disabled={loading}>

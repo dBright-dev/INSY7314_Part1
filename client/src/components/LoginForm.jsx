@@ -1,28 +1,27 @@
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { eventMap } from "@testing-library/user-event/dist/cjs/event/eventMap.js";
+// client/src/components/LoginForm.jsx
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginForm() {
     const { login } = useAuth();
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [status, setStatus] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setStatus('');
-
         if (!email.trim() || !password.trim()) {
             setStatus('Email and password are required.');
             return;
         }
-
         setLoading(true);
         try {
-            const user = await login(email, password);
-            setStatus('Login successful.');
-            onSuccess?.(user);
+            await login(email, password);
+            navigate('/dashboard');
         } catch (err) {
             setStatus(err.message);
         } finally {
@@ -34,43 +33,40 @@ export default function LoginForm() {
         <section className="panel" style={{ maxWidth: 420, margin: '60px auto' }}>
             <span className="eyebrow plain">Welcome back</span>
             <h1 style={{ marginTop: 8 }}>Sign in to Hustle<span className="gold">+</span></h1>
-            <p style={{ color: 'var(--muted)', fontSize: 13, marginBottom: 24 }}>
-                Continue to your dashboard.
-            </p>
 
-            <form onSubmit={handleSubmit} onValidate>
-                <div>
-                    <label htmlFor="email" className="field-label">Email</label>
+            <form onSubmit={handleSubmit} noValidate>
+                <label className="field-label">
+                    Email
                     <input
-                        id="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        autoComplete="email"
                         autoFocus
                     />
-                </div>
+                </label>
 
-                <div>
-                    <label className="field-label" htmlFor="password">Password</label>
+                <label className="field-label">
+                    Password
                     <input
-                        id="password"
-                        type="password" 
+                        type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        autoComplete="current-password"
                     />
-                </div>
+                </label>
 
-                <button type="submit" disabled={loading} className="primary-button full-button">
-                    {loading ? 'Logging in...' : 'Login'}
+                <button
+                    type="submit"
+                    className="primary-button full-button"
+                    disabled={loading}
+                >
+                    {loading ? 'Signing in…' : 'Sign in'}
                 </button>
             </form>
 
-            {status && <p role="alert" className="status status-in-progress" style={{ marginTop: 14 }}>{status}</p>}
+            {status && <p role="alert" style={{ marginTop: 14, color: 'var(--mauve-deep)' }}>{status}</p>}
 
-            <p style={{ marginTop: 18, fontSize: 12, textAlign: 'center', color: 'var(--muted)' }}>
-                No account? <Link to="/register" style={{ color: 'var(--sapphire)' }}>Register</Link>
+            <p style={{ marginTop: 18, fontSize: 12, textAlign: 'center' }}>
+                No account? <Link to="/register">Register</Link>
             </p>
         </section>
     );

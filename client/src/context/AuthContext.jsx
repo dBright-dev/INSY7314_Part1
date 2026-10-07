@@ -1,10 +1,6 @@
+// client/src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from 'react';
-import {
-    apiRequest,
-    saveAuth,
-    clearAuth,
-    getSavedUser,
-} from '../services/api';
+import { apiRequest, saveAuth, clearAuth, getSavedUser } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -12,7 +8,6 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Rehydrate user from sessionStorage on mount
     useEffect(() => {
         const saved = getSavedUser();
         if (saved) setUser(saved);
@@ -24,18 +19,10 @@ export function AuthProvider({ children }) {
             method: 'POST',
             body: JSON.stringify({ email, password }),
         });
-
         const { token, user: loggedUser } = data.data || data;
         saveAuth(token, loggedUser);
         setUser(loggedUser);
         return loggedUser;
-    };
-
-    const register = async (payload) => {
-        return apiRequest('/api/auth/register', {
-            method: 'POST',
-            body: JSON.stringify(payload),
-        });
     };
 
     const logout = () => {
@@ -44,7 +31,7 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+        <AuthContext.Provider value={{ user, loading, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
