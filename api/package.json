@@ -11,17 +11,18 @@
     "test:coverage": "jest --coverage"
   },
   "jest": {
-  "testEnvironment": "node",
-  "testMatch": ["**/tests/**/*.test.js"],
-  "collectCoverageFrom": [
-    "controllers/**/*.js",
-    "middleware/**/*.js",
-    "models/**/*.js",
-    "utils/**/*.js"
-  ]
-},
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "controllers/**/*.js",
+      "middleware/**/*.js",
+      "models/**/*.js",
+      "utils/**/*.js"
+    ]
+  },
   "dependencies": {
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
@@ -38,7 +39,12 @@
   "directories": {
     "test": "tests"
   },
-  "keywords": ["express", "mongodb", "jwt", "marketplace"],
+  "keywords": [
+    "express",
+    "mongodb",
+    "jwt",
+    "marketplace"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs"
