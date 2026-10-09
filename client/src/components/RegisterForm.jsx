@@ -21,8 +21,8 @@ export default function RegisterForm() {
     const validate = () => {
         if (!form.name.trim()) return 'Name is required.';
         if (!form.email.trim()) return 'Email is required.';
-        if (!form.password.length < 8) return 'Password must be at least 8 characters.';
-        if (!form.password !== form.comfirmPassword) return 'Passwords do not match.';
+        if (form.password.length < 8) return 'Password must be at least 8 characters.';
+        if (form.password !== form.comfirmPassword) return 'Passwords do not match.';
         return '';
     }
 
@@ -42,7 +42,7 @@ export default function RegisterForm() {
                 name: form.name,
                 email: form.email,
                 password: form.password,
-                role: 'form.role',
+                role: form.role,
             });
             navigate('/login', { state: { registered: true }});
         } catch (err) {
