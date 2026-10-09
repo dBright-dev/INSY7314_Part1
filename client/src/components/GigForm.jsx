@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import StatusMessage from './StatusMessage';
+
 
 export const CATEGORIES = ['Design', 'Development', 'Marketing', 'Writing', 'Business'];
 
@@ -96,7 +96,11 @@ export default function GigForm({ initialValues, onSubmit, onCancel, submitLabel
             ))}
             {field('price', 'Price (R)', <input type="number" min="0" step="0.01" {...common('price')} />)}
 
-            <StatusMessage type="error">{submitError}</StatusMessage>
+            {submitError && (
+            <p role="alert" style={{ color: 'var(--mauve-deep)', margin: '12px 0' }}>
+            {submitError}
+            </p>
+            )}
 
             <div style={{ display: 'flex', gap: 10 }}>
                 <button type="submit" className="primary-button" disabled={submitting}>
