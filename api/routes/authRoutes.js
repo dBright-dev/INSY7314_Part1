@@ -4,26 +4,28 @@
 
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
-const { validateRegistration, validateLogin } = require('../middleware/validationMiddleware');
-const { authenticateToken } = require('../middleware/authMiddleware');
+
+const { register, login, getMe } = require('../controllers/authController');
+const { protect } = require('../middleware/authMiddleware');
+const { authLimiter } = require('../middleware/rateLimiter');
+const { validateRegister, validateLogin } = require('../middleware/validationMiddleware');
 
 /**
  * POST /api/auth/register
- * Register a new user
+ * Public route with rate limiting and validation
  */
-router.post('/register', validateRegistration, authController.register);
+router.post('/register', authLimiter, validateRegister, register);
 
 /**
  * POST /api/auth/login
- * Login an existing user
+ * Public route with rate limiting and validation
  */
-router.post('/login', validateLogin, authController.login);
+router.post('/login', authLimiter, validateLogin, login);
 
 /**
- * GET /api/auth/profile
- * Get current user profile (Protected route)
+ * GET /api/auth/me
+ * Protected route - requires valid JWT
  */
-router.get('/profile', authenticateToken, authController.getProfile);
+router.get('/me', protect, getMe);
 
 module.exports = router;
