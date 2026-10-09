@@ -1,0 +1,76 @@
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Name is required'],
+      trim: true,
+      minlength: [2, 'Name must be at least 2 characters'],
+      maxlength: [50, 'Name cannot exceed 50 characters'],
+    },
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address'],
+    },
+    passwordHash: {
+      type: String,
+      required: [true, 'Password is required'],
+      select: false, // Excluded from queries by default (security)
+    },
+    role: {
+      type: String,
+      enum: {
+        values: ['Client', 'Freelancer', 'Admin'],
+        message: 'Role must be Client, Freelancer, or Admin',
+      },
+      default: 'Client',
+    },
+  },
+  {
+    timestamps: true, // Adds createdAt and updatedAt
+    toJSON: {
+      // Remove sensitive fields when converting to JSON
+      transform: (doc, ret) => {
+        delete ret.passwordHash;
+        delete ret.__v;
+        return ret;
+      },
+    },
+  }
+);
+
+/**
+ * Pre-save middleware: Hash password before saving
+ * Only hashes if password field was modified
+ */
+userSchema.pre('save', async function (next) {
+  // Only hash if password field is new or modified
+  if (!this.isModified('passwordHash')) {
+    return next();
+  }
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * Instance method: Compare plain password with stored hash
+ * @param {string} enteredPassword - Plain text password to verify
+ * @returns {Promise<boolean>} True if matches, false otherwise
+ */
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.passwordHash);
+};
+
+module.exports = mongoose.model('User', userSchema);
