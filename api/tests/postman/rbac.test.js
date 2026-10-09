@@ -46,7 +46,7 @@ describe('RBAC authorizeRoles middleware', () => {
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         success: false,
-        message: expect.stringContaining('Insufficient permissions'),
+        message: expect.stringContaining('is not authorized'),
       })
     );
   });
