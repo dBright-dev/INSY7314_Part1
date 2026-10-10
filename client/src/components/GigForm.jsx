@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-
 export const CATEGORIES = ['Design', 'Development', 'Marketing', 'Writing', 'Business'];
 
 // Pure function so it can be unit tested without rendering anything.
@@ -26,6 +25,18 @@ export function validateGig(values) {
     }
     return errors;
 }
+
+const inputStyle = {
+    display: 'block',
+    width: '100%',
+    marginTop: 7,
+    border: '1px solid var(--line)',
+    background: 'white',
+    borderRadius: 9,
+    padding: 11,
+    color: 'var(--ink)',
+    font: 'inherit',
+};
 
 export default function GigForm({ initialValues, onSubmit, onCancel, submitLabel = 'Save gig' }) {
     const [values, setValues] = useState(() => ({
@@ -78,6 +89,7 @@ export default function GigForm({ initialValues, onSubmit, onCancel, submitLabel
     const common = (name) => ({
         id: name,
         name,
+        style: inputStyle,
         value: values[name],
         onChange: handleChange,
         'aria-invalid': Boolean(errors[name]),
@@ -97,9 +109,9 @@ export default function GigForm({ initialValues, onSubmit, onCancel, submitLabel
             {field('price', 'Price (R)', <input type="number" min="0" step="0.01" {...common('price')} />)}
 
             {submitError && (
-            <p role="alert" style={{ color: 'var(--mauve-deep)', margin: '12px 0' }}>
-            {submitError}
-            </p>
+                <p role="alert" style={{ color: 'var(--mauve-deep)', margin: '12px 0' }}>
+                    {submitError}
+                </p>
             )}
 
             <div style={{ display: 'flex', gap: 10 }}>
