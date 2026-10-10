@@ -1,3 +1,5 @@
+import { formatRand } from '../utils/format';
+
 const STATUS = {
     pending: { label: 'Pending', cls: 'status-new' },
     confirmed: { label: 'Confirmed', cls: 'status-confirmed' },
@@ -8,7 +10,7 @@ const STATUS = {
 // viewAs = 'client'     -> shows the freelancer's name
 // viewAs = 'freelancer' -> shows the client's name
 export default function BookingCard({ booking, viewAs = 'client' }) {
-    const gig = booking.gig || {}; // populated gig can be null if it was deleted
+    const gig = booking.gig || {}; // the populated gig can be null if it was deleted
     const other = viewAs === 'freelancer' ? booking.client : booking.freelancer;
     const date = new Date(booking.date || booking.createdAt);
     const validDate = !Number.isNaN(date.getTime());
@@ -22,12 +24,13 @@ export default function BookingCard({ booking, viewAs = 'client' }) {
             </div>
             <div className="booking-info">
                 <strong>{gig.title || 'Gig no longer available'}</strong>
-                <small>
+                <span>
                     {viewAs === 'freelancer' ? 'Client' : 'Freelancer'}: {other?.name || 'Unknown'}
-                </small>
+                    {gig.price != null ? ` · ${formatRand(gig.price, 0)}` : ''}
+                </span>
             </div>
-            {gig.price != null && <strong>R {Number(gig.price).toLocaleString('en-ZA')}</strong>}
             <span className={`status ${status.cls}`}>{status.label}</span>
+            <span />
         </div>
     );
 }
